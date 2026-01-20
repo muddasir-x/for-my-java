@@ -7,13 +7,13 @@ pipeline {
                 git branch: 'main',
                     credentialsId: 'github-creds',
                     url: 'https://github.com/muddasir-x/for-my-java.git'
-
             }
         }
 
         stage('Build & Test') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn -v'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
@@ -25,11 +25,12 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'docker stop java-project || true'
-                sh 'docker rm java-project || true'
-                sh 'docker run -d --name java-project -p 8081:8080 java-project:1.0'
+                sh '''
+                docker stop java-project || true
+                docker rm java-project || true
+                docker run -d --name java-project -p 8081:8080 java-project:1.0
+                '''
             }
         }
     }
 }
-
