@@ -4,7 +4,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/muddasir-x/java-project.git'
+                git branch: 'main',
+                    credentialsId: 'github-creds',
+                    url: 'https://github.com/muddasir-x/java-project.git'
             }
         }
 
@@ -24,20 +26,8 @@ pipeline {
             steps {
                 sh 'docker stop java-project || true'
                 sh 'docker rm java-project || true'
-                sh 'docker run -d --name java-project -p 80:8085 java-project:1.0'
+                sh 'docker run -d --name java-project -p 8081:8080 java-project:1.0'
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline finished.'
-        }
-        success {
-            echo 'Pipeline succeeded ✅'
-        }
-        failure {
-            echo 'Pipeline failed ❌'
         }
     }
 }
